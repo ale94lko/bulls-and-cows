@@ -5,6 +5,8 @@ namespace app\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreGameRequest;
 use App\Http\Requests\UpdateGameRequest;
+use App\Http\Resources\V1\GameResource;
+use App\Http\Resources\V1\GameCollection;
 use App\Models\Game;
 
 class GameController extends Controller
@@ -14,7 +16,7 @@ class GameController extends Controller
      */
     public function index()
     {
-        //
+        return new GameCollection(Game::all());
     }
 
     /**
@@ -38,7 +40,7 @@ class GameController extends Controller
      */
     public function show(Game $game)
     {
-        //
+        return new GameResource($game);
     }
 
     /**
