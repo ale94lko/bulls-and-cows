@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('secret_number');
             $table->integer('max_time'); //seconds
             $table->string('identifier');
+            $table->string('status');
             $table->timestamps();
         });
     }

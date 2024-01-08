@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace app\Http\Controllers\Api\V1;
 
-use App\Models\Game;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreGameRequest;
 use App\Http\Requests\UpdateGameRequest;
+use App\Models\Game;
 
 class GameController extends Controller
 {
