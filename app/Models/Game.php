@@ -13,7 +13,6 @@ class Game extends Model
         'user',
         'age',
         'max_time',
-        'secret_number',
     ];
 
     public static function boot()
@@ -23,6 +22,22 @@ class Game extends Model
         self::creating(function ($model) {
             $bytes = random_bytes(24);
             $model->identifier = bin2hex($bytes);
+            $model->secret_number = $model->genSecretNumber();
         });
+    }
+
+    public function genSecretNumber():int
+    {
+        $numbers = [];
+
+        do {
+            $randomDigit = count($numbers) === 0
+                ? mt_rand(1, 9) : mt_rand(0, 9);
+            if (!in_array($randomDigit, $numbers)) {
+                $numbers[] = $randomDigit;
+            }
+        } while (count($numbers) < 4);
+
+        return (int) implode('', $numbers);
     }
 }
