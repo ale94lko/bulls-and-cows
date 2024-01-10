@@ -18,6 +18,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['namespace' => 'App\Http\Controllers\Api\V1'], function() {
-    Route::apiResource('game', GameController::class);
-});
+Route::group(
+    [
+        'namespace' => 'App\Http\Controllers\Api\V1',
+        'middleware' => 'auth:sanctum',
+    ],
+    function() {
+        Route::apiResource('game', GameController::class);
+    }
+);
