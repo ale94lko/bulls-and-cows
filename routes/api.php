@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/setup', function() {
+Route::get('/game/setup', function() {
     $credentials = [
         'email' => 'admin@example.com',
         'password' => 'password',

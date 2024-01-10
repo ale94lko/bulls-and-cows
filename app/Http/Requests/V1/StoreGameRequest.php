@@ -27,15 +27,20 @@ class StoreGameRequest extends FormRequest
         return [
             'user'=> ['required'],
             'age'=> ['required'],
-            'max_time'=> ['required'],
         ];
     }
 
     protected function prepareForValidation()
     {
-        $this->merge([
-            'max_time' => $this->maxTime,
-            'secret_number' => $this->secretNumber,
-        ]);
+        if ($this->maxTime) {
+            $this->merge([
+                'max_time' => $this->maxTime,
+            ]);
+        }
+        if ($this->secretNumber) {
+            $this->merge([
+                'secret_number' => $this->secretNumber,
+            ]);
+        }
     }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('user');
             $table->integer('age');
             $table->integer('secret_number')->nullable();
-            $table->integer('max_time'); //seconds
+            $table->integer('max_time')->nullable(); //seconds
             $table->string('identifier');
             $table->string('status')->nullable();
             $table->timestamps();
