@@ -20,19 +20,11 @@ class GameController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreGameRequest $request)
     {
-        //
+        return new GameResource(Game::create($request->all()));
     }
 
     /**
@@ -41,14 +33,6 @@ class GameController extends Controller
     public function show(Game $game)
     {
         return new GameResource($game);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Game $game)
-    {
-        //
     }
 
     /**
