@@ -24,4 +24,16 @@ class GameResource extends JsonResource
             'identifier' => $this->identifier,
         ];
     }
+
+    /**
+     * Transform the resource into an array with only the identifier.
+     *
+     * @return array<string, mixed>
+     */
+    public function getIdentifier(): array
+    {
+        return [
+            'identifier' => $this->identifier,
+        ];
+    }
 }
