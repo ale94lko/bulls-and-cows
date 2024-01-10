@@ -20,8 +20,6 @@ class Game extends Model
         parent::boot();
 
         self::creating(function ($model) {
-            $bytes = random_bytes(24);
-            $model->identifier = bin2hex($bytes);
             $model->secret_number = $model->genSecretNumber();
         });
     }

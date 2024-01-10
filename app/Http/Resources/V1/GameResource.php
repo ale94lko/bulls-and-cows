@@ -21,7 +21,6 @@ class GameResource extends JsonResource
             'maxTime' => $this->max_time,
             'secretNumber' => $this->secret_number,
             'status' => $this->status,
-            'identifier' => $this->identifier,
         ];
     }
 
@@ -33,7 +32,7 @@ class GameResource extends JsonResource
     public function getIdentifier(): array
     {
         return [
-            'identifier' => $this->identifier,
+            'identifier' => $this->id,
         ];
     }
 }

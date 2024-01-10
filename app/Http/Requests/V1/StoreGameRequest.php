@@ -37,10 +37,5 @@ class StoreGameRequest extends FormRequest
                 'max_time' => $this->maxTime,
             ]);
         }
-        if ($this->secretNumber) {
-            $this->merge([
-                'secret_number' => $this->secretNumber,
-            ]);
-        }
     }
 }
