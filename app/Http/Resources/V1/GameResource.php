@@ -15,9 +15,11 @@ class GameResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'user' => $this->user,
             'age' => $this->age,
             'maxTime' => $this->max_time,
+            'secretNumber' => $this->secret_number,
             'status' => $this->status,
             'identifier' => $this->identifier,
         ];

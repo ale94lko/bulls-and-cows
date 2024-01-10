@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace app\Http\Requests\V1;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -33,6 +33,7 @@ class StoreGameRequest extends FormRequest
     {
         $this->merge([
             'max_time' => $this->maxTime,
+            'secret_number' => $this->secretNumber,
         ]);
     }
 }

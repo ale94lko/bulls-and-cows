@@ -13,6 +13,7 @@ class Game extends Model
         'user',
         'age',
         'max_time',
+        'secret_number',
     ];
 
     public static function boot()
