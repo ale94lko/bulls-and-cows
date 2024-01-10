@@ -30,13 +30,11 @@ class UpdateGameRequest extends FormRequest
             return [
                 'user'=> ['required'],
                 'age'=> ['required'],
-                'max_time'=> ['required'],
             ];
         } else {
             return [
                 'user'=> ['sometimes', 'required'],
                 'age'=> ['sometimes', 'required'],
-                'max_time'=> ['sometimes', 'required'],
             ];
         }
     }
