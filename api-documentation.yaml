@@ -1,0 +1,334 @@
+openapi: 3.0.3
+info:
+  title: Bulls and Cows 
+  description: |-
+    This is a game for two players whose objective is to guess a number made up of four digits
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:8000/api/
+tags:
+  - name: setup
+    description: Setup the game
+  - name: game
+    description: Everything about the Game
+paths:
+  /game/setup:
+    get:
+      tags:
+        - setup
+      summary: Setup the game
+      description: Returns the secret tokens to make all the requests
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setup'
+  /game:
+    get:
+      tags:
+        - game
+      summary: Get all games
+      description: Returns all the games
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+      security:
+        - apiToken: []
+    post:
+      tags:
+        - game
+      summary: Add a new game
+      description: Returns the game identifier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGame'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameIdentifier'
+        '405':
+          description: Invalid input
+      security:
+        - apiToken: []
+  /game/{gameId}:
+    get:
+      tags:
+        - game
+      summary: Find game by ID
+      description: Returns a single game
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '400':
+          description: Missing id attribute
+        '404':
+          description: Game not found
+      security:
+        - apiToken: []
+    patch:
+      tags:
+        - game
+      summary: Update game
+      description: Updates a game attribute
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGame'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '405':
+          description: Invalid input
+      security:
+        - apiToken: []
+    delete:
+      tags:
+        - game
+      summary: Delete game
+      description: Deletes a single game
+      parameters:
+        - name: gameId
+          in: path
+          description: Game id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid game id
+      security:
+       - apiToken: []
+  /game/tryCombination:
+    post:
+      tags:
+        - game
+      summary: Try combination
+      description: Tries a new combination to guess the secret number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Combination'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CombinationResult'
+        '406':
+          description: Game max time not set
+        '409':
+          description: Duplicated combination
+      security:
+        - apiToken: []
+  /game/getPreviousResponse:
+    post:
+      tags:
+        - game
+      summary: Get previous response
+      description: Returns the previous response to a specific combination try
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreviousResponse'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CombinationResult'
+        '406':
+          description: Game max time not set
+        '409':
+          description: Duplicated combination
+      security:
+        - apiToken: []
+components:
+  schemas:
+    Game:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        user:
+          type: string
+          format: varchar(255)
+          example: alex
+        age:
+          type: integer
+          format: int32
+          example: 23
+        secretNumber:
+          type: integer
+          format: int32
+          example: 1234
+        combinations:
+          type: array
+          items:
+            type: integer
+          description: Combinations history
+          example: [1234, 5678]
+        maxTime:
+          type: integer
+          description: Max time to play the game expressed in seconds
+          format: int32
+          example: 120
+        status:
+          type: string
+          description: Game Status (Won or Lost)
+          example: W
+          enum:
+            - W
+            - L
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      xml:
+        name: game
+    CreateGame:
+      type: object
+      properties:
+        user:
+          type: string
+          format: varchar(255)
+          example: alex
+        age:
+          type: integer
+          format: int32
+          example: 23
+        maxTime:
+          type: integer
+          description: Max time to play the game expressed in seconds
+          format: int32
+          example: 120
+      xml:
+        name: createGame
+    UpdateGame:
+      type: object
+      properties:
+        maxTime:
+          type: integer
+          description: Max time to play the game expressed in seconds
+          format: int32
+          example: 120
+      xml:
+        name: updateGame
+    GameIdentifier:
+      type: object
+      properties:
+        identifier:
+          type: integer
+          format: int64
+          example: 10
+    Combination:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        combination:
+          type: integer
+          format: int64
+          example: 1234
+    CombinationResult:
+      type: object
+      properties:
+        tries:
+          type: integer
+          format: int64
+          example: 1
+        number:
+          type: integer
+          format: int64
+          example: 1234
+        result:
+          type: string
+          example: 1T2V
+        remainingTime:
+          type: string
+          example: 1 minute 54 seconds
+        evaluation:
+          type: string
+          example: 35
+        ranking:
+          type: string
+          example: Position 2
+    PreviousResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        tryNumber:
+          type: integer
+          format: int64
+          example: 1
+    Setup:
+      type: object
+      properties:
+        adminToken:
+          type: string
+          description: Token that can make all requests
+          example: 1|poK46KQNtmbB5tubYZqxITc3hFCFWOOhgJ7BTmkj8b10dd19
+        updateToken:
+          type: string
+          description: Token that can only make (create, read, update) requests
+          example: 1|imkqzNyF2llEDCYplhJ9bafjaxgcGOFHJ1FM2HLwe4666234
+        basicToken:
+          type: string
+          description: Token that can only make (read) requests
+          example: 1|dzQj4CXTp2Nfkr6MY92MBo7C0Ig7gIU71EV2oQbUda4880d6
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      name: Authorization
+      in: header
