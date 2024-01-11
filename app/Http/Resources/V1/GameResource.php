@@ -83,71 +83,79 @@ class GameResource extends JsonResource
                         break;
 
                     default:
-                        $now = date('Y-m-d H:i:s');
-                        $createdAtStr = strtotime(
-                            '+' . $this->max_time. ' second',
-                            strtotime($this->created_at)
-                        );
-                        $gameMaxTime = date('Y-m-d H:i:s', $createdAtStr);
-
-                        if (strtotime($now) > strtotime($gameMaxTime)) {
-                            $combinationHistory[] = $combination;
-                            $attributes['combinations'] =
-                                json_encode($combinationHistory);
-                            $attributes['status'] = 'L';
-
+                        if (empty($this->max_time)) {
                             $response = [
-                                'code' => 200,
-                                'message' => 'Game over.',
-                                'data' => [
-                                    'secretNumber' => $this->secret_number,
-                                ],
-                            ];
-                        } elseif (in_array($combination, $combinationHistory)
-                            && !$gettingPreviousResponse
-                        ) {
-                            $response = [
-                                'code' => 409,
-                                'message' => 'Duplicated combination.',
-                            ];
-                        } elseif ($combination === $this->secret_number
-                            && !$gettingPreviousResponse
-                        ) {
-                            $combinationHistory[] = $combination;
-                            $attributes['combinations'] =
-                                json_encode($combinationHistory);
-                            $attributes['status'] = 'W';
-
-                            $response = [
-                                'code' => 200,
-                                'message' => 'You win.',
+                                'code' => 406,
+                                'message' => 'Game max time not set.',
                             ];
                         } else {
-                            $combinationHistory[] = $combination;
-                            $attributes['combinations'] =
-                                json_encode($combinationHistory);
-                            $tries = $gettingPreviousResponse
-                                ? count($combinationHistory) - 1
-                                : count($combinationHistory);
-                            $response = [
-                                'code' => 200,
-                                'data' => [
-                                    'tries' => $tries,
-                                    'number' => $combination,
-                                    'result' => $this->getResult(
-                                        $combination,
-                                        $this->secret_number
-                                    ),
-                                    'remainingTime' => $this->getRemainingTime(
-                                        $now,
-                                        $gameMaxTime
-                                    ),
-                                    'evaluation' => $this->getEvaluation(
-                                        $now,
-                                        count($combinationHistory)
-                                    ),
-                                ],
-                            ];
+                            $now = date('Y-m-d H:i:s');
+                            $createdAtStr = strtotime(
+                                '+' . $this->max_time. ' second',
+                                strtotime($this->created_at)
+                            );
+                            $gameMaxTime = date('Y-m-d H:i:s', $createdAtStr);
+
+                            if (strtotime($now) > strtotime($gameMaxTime)) {
+                                $combinationHistory[] = $combination;
+                                $attributes['combinations'] =
+                                    json_encode($combinationHistory);
+                                $attributes['status'] = 'L';
+
+                                $response = [
+                                    'code' => 200,
+                                    'message' => 'Game over.',
+                                    'data' => [
+                                        'secretNumber' => $this->secret_number,
+                                    ],
+                                ];
+                            } elseif (in_array($combination, $combinationHistory)
+                                && !$gettingPreviousResponse
+                            ) {
+                                $response = [
+                                    'code' => 409,
+                                    'message' => 'Duplicated combination.',
+                                ];
+                            } elseif ($combination === $this->secret_number
+                                && !$gettingPreviousResponse
+                            ) {
+                                $combinationHistory[] = $combination;
+                                $attributes['combinations'] =
+                                    json_encode($combinationHistory);
+                                $attributes['status'] = 'W';
+
+                                $response = [
+                                    'code' => 200,
+                                    'message' => 'You win.',
+                                ];
+                            } else {
+                                $combinationHistory[] = $combination;
+                                $attributes['combinations'] =
+                                    json_encode($combinationHistory);
+                                $tries = $gettingPreviousResponse
+                                    ? count($combinationHistory) - 1
+                                    : count($combinationHistory);
+                                $response = [
+                                    'code' => 200,
+                                    'data' => [
+                                        'tries' => $tries,
+                                        'number' => $combination,
+                                        'result' => $this->getResult(
+                                            $combination,
+                                            $this->secret_number
+                                        ),
+                                        'remainingTime' =>
+                                            $this->getRemainingTime(
+                                                $now,
+                                                $gameMaxTime
+                                            ),
+                                        'evaluation' => $this->getEvaluation(
+                                            $now,
+                                            count($combinationHistory)
+                                        ),
+                                    ],
+                                ];
+                            }
                         }
                         break;
                 }
