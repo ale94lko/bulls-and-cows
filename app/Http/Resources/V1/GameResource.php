@@ -52,8 +52,8 @@ class GameResource extends JsonResource
         $attributes = [];
         if (empty($this)) {
             $response = [
-                'statusCode' => 400,
-                'errorMsg' => 'Game not found.',
+                'code' => 404,
+                'message' => 'Game not found.',
             ];
         } else {
             $combinationHistory = json_decode($this->combinations, true) ?? [];
@@ -63,22 +63,22 @@ class GameResource extends JsonResource
 
             if (empty($combination)) {
                 $response = [
-                    'statusCode' => 400,
-                    'errorMsg' => 'Try number not found.',
+                    'code' => 404,
+                    'message' => 'Try number not found.',
                 ];
             } else {
                 switch ($this->status) {
                     case 'L':
                         $response = [
-                            'statusCode' => 200,
-                            'msg' => 'Game already finished. You lost.',
+                            'code' => 200,
+                            'message' => 'Game already finished. You lost.',
                         ];
                         break;
 
                     case 'W':
                         $response = [
-                            'statusCode' => 200,
-                            'msg' => 'Game already finished. You won.',
+                            'code' => 200,
+                            'message' => 'Game already finished. You won.',
                         ];
                         break;
 
@@ -97,16 +97,18 @@ class GameResource extends JsonResource
                             $attributes['status'] = 'L';
 
                             $response = [
-                                'statusCode' => 200,
-                                'secretNumber' => $this->secret_number,
-                                'msg' => 'Game over.',
+                                'code' => 200,
+                                'message' => 'Game over.',
+                                'data' => [
+                                    'secretNumber' => $this->secret_number,
+                                ],
                             ];
                         } elseif (in_array($combination, $combinationHistory)
                             && !$gettingPreviousResponse
                         ) {
                             $response = [
-                                'statusCode' => 409,
-                                'errorMsg' => 'Duplicated combination.',
+                                'code' => 409,
+                                'message' => 'Duplicated combination.',
                             ];
                         } elseif ($combination === $this->secret_number
                             && !$gettingPreviousResponse
@@ -117,8 +119,8 @@ class GameResource extends JsonResource
                             $attributes['status'] = 'W';
 
                             $response = [
-                                'statusCode' => 200,
-                                'msg' => 'You win.',
+                                'code' => 200,
+                                'message' => 'You win.',
                             ];
                         } else {
                             $combinationHistory[] = $combination;
@@ -128,21 +130,23 @@ class GameResource extends JsonResource
                                 ? count($combinationHistory) - 1
                                 : count($combinationHistory);
                             $response = [
-                                'statusCode' => 200,
-                                'tries' => $tries,
-                                'number' => $combination,
-                                'result' => $this->getResult(
-                                    $combination,
-                                    $this->secret_number
-                                ),
-                                'remainingTime' => $this->getRemainingTime(
-                                    $now,
-                                    $gameMaxTime
-                                ),
-                                'evaluation' => $this->getEvaluation(
-                                    $now,
-                                    count($combinationHistory)
-                                ),
+                                'code' => 200,
+                                'data' => [
+                                    'tries' => $tries,
+                                    'number' => $combination,
+                                    'result' => $this->getResult(
+                                        $combination,
+                                        $this->secret_number
+                                    ),
+                                    'remainingTime' => $this->getRemainingTime(
+                                        $now,
+                                        $gameMaxTime
+                                    ),
+                                    'evaluation' => $this->getEvaluation(
+                                        $now,
+                                        count($combinationHistory)
+                                    ),
+                                ],
                             ];
                         }
                         break;

@@ -63,14 +63,14 @@ class GameController extends Controller
         $id = $request['id'];
         if (empty($id)) {
             return [
-                'statusCode' => 400,
-                'errorMsg' => 'Missing id attribute',
+                'code' => 400,
+                'message' => 'Missing id attribute',
             ];
         }
         if (empty($request['combination'])) {
             return [
-                'statusCode' => 400,
-                'errorMsg' => 'Missing combination number',
+                'code' => 400,
+                'message' => 'Missing combination number',
             ];
         }
 
@@ -95,14 +95,14 @@ class GameController extends Controller
         $id = $request['id'];
         if (empty($id)) {
             return [
-                'statusCode' => 400,
-                'errorMsg' => 'Missing id attribute',
+                'code' => 400,
+                'message' => 'Missing id attribute',
             ];
         }
         if (empty($request['tryNumber'])) {
             return [
-                'statusCode' => 400,
-                'errorMsg' => 'Missing try number',
+                'code' => 400,
+                'message' => 'Missing try number',
             ];
         }
 

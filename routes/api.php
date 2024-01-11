@@ -43,11 +43,20 @@ Route::get('/game/setup', function() {
             $basicToken = $user->createToken('basic-token', []);
 
             return [
-                'admin' => $adminToken->plainTextToken,
-                'update' => $updateToken->plainTextToken,
-                'basic' => $basicToken->plainTextToken,
+                'code' => 200,
+                'message' => 'Game setup successfully created.',
+                'data' => [
+                    'adminToken' => $adminToken->plainTextToken,
+                    'updateToken' => $updateToken->plainTextToken,
+                    'basicToken' => $basicToken->plainTextToken,
+                ],
             ];
         }
+    } else {
+        return [
+            'code' => 200,
+            'message' => 'Game already has been configured.',
+        ];
     }
 });
 
