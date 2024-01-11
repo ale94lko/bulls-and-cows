@@ -30,25 +30,27 @@ class UpdateGameRequest extends FormRequest
             return [
                 'user'=> ['required'],
                 'age'=> ['required'],
+                'max_time' => ['integer', 'max:86400', 'min:120'],
             ];
         } else {
             return [
                 'user'=> ['sometimes', 'required'],
                 'age'=> ['sometimes', 'required'],
+                'max_time' => ['integer', 'max:86400', 'min:120'],
             ];
         }
     }
 
-    protected function prepareForValidation()
+    /**
+     * Prepare model for validation
+     *
+     * @return void
+     */
+    protected function prepareForValidation(): void
     {
         if ($this->maxTime) {
             $this->merge([
                 'max_time' => $this->maxTime,
-            ]);
-        }
-        if ($this->secretNumber) {
-            $this->merge([
-                'secret_number' => $this->secretNumber,
             ]);
         }
     }

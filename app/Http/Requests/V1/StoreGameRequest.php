@@ -27,10 +27,16 @@ class StoreGameRequest extends FormRequest
         return [
             'user'=> ['required'],
             'age'=> ['required'],
+            'max_time' => ['integer', 'max:86400', 'min:120'],
         ];
     }
 
-    protected function prepareForValidation()
+    /**
+     * Prepare model for validation
+     *
+     * @return void
+     */
+    protected function prepareForValidation(): void
     {
         if ($this->maxTime) {
             $this->merge([

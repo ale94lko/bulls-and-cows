@@ -13,9 +13,16 @@ class Game extends Model
         'user',
         'age',
         'max_time',
+        'combinations',
+        'status',
     ];
 
-    public static function boot()
+    /**
+     * Actions to do when creating a new game
+     *
+     * @return void
+     */
+    public static function boot(): void
     {
         parent::boot();
 
@@ -24,7 +31,12 @@ class Game extends Model
         });
     }
 
-    public function genSecretNumber():int
+    /**
+     * Generate secret number
+     *
+     * @return int
+     */
+    public function genSecretNumber(): int
     {
         $numbers = [];
 

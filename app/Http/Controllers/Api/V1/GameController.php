@@ -50,4 +50,36 @@ class GameController extends Controller
     {
         $game->delete();
     }
+
+    /**
+     * Try a combination to guess the secret number
+     *
+     * @param UpdateGameRequest $request
+     * @return array
+     * @throws \Exception
+     */
+    public function tryCombination(UpdateGameRequest $request): array
+    {
+        $id = $request['id'];
+        if (empty($id)) {
+            return [
+                'statusCode' => 400,
+                'errorMsg' => 'Missing ID attribute',
+            ];
+        }
+        if (empty($request['combination'])) {
+            return [
+                'statusCode' => 400,
+                'errorMsg' => 'Missing combination number',
+            ];
+        }
+
+        $game = Game::find($id);
+        $response = (new GameResource($game))
+            ->getCombinationInformation($request);
+
+        $game->update($response['attributes']);
+
+        return $response['response'];
+    }
 }

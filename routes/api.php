@@ -58,5 +58,6 @@ Route::group(
     ],
     function() {
         Route::apiResource('game', GameController::class);
+        Route::post('game/tryCombination', 'GameController@tryCombination');
     }
 );
