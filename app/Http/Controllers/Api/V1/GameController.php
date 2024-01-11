@@ -64,7 +64,7 @@ class GameController extends Controller
         if (empty($id)) {
             return [
                 'statusCode' => 400,
-                'errorMsg' => 'Missing ID attribute',
+                'errorMsg' => 'Missing id attribute',
             ];
         }
         if (empty($request['combination'])) {
@@ -79,6 +79,36 @@ class GameController extends Controller
             ->getCombinationInformation($request);
 
         $game->update($response['attributes']);
+
+        return $response['response'];
+    }
+
+    /**
+     * Get a previously tried combination
+     *
+     * @param UpdateGameRequest $request
+     * @return array
+     * @throws \Exception
+     */
+    public function getPreviousResponse(UpdateGameRequest $request): array
+    {
+        $id = $request['id'];
+        if (empty($id)) {
+            return [
+                'statusCode' => 400,
+                'errorMsg' => 'Missing id attribute',
+            ];
+        }
+        if (empty($request['tryNumber'])) {
+            return [
+                'statusCode' => 400,
+                'errorMsg' => 'Missing try number',
+            ];
+        }
+
+        $game = Game::find($id);
+        $response = (new GameResource($game))
+            ->getCombinationInformation($request, true);
 
         return $response['response'];
     }
