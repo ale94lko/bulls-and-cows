@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\V1;
 
+use App\Models\Game;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -135,6 +136,10 @@ class GameResource extends JsonResource
                                 $tries = $gettingPreviousResponse
                                     ? count($combinationHistory) - 1
                                     : count($combinationHistory);
+                                $evaluation = $this->getEvaluation(
+                                    $now,
+                                    count($combinationHistory)
+                                );
                                 $response = [
                                     'code' => 200,
                                     'data' => [
@@ -149,9 +154,10 @@ class GameResource extends JsonResource
                                                 $now,
                                                 $gameMaxTime
                                             ),
-                                        'evaluation' => $this->getEvaluation(
+                                        'evaluation' => $evaluation,
+                                        'ranking' => $this->getRanking(
                                             $now,
-                                            count($combinationHistory)
+                                            $evaluation
                                         ),
                                     ],
                                 ];
@@ -269,5 +275,39 @@ class GameResource extends JsonResource
         $endAt = new DateTime($now);
 
         return $endAt->diff($startAt);
+    }
+
+    /**
+     * Get actual game ranking position
+     *
+     * @param string $now
+     * @param string $evaluation
+     * @return string
+     * @throws \Exception
+     */
+    private function getRanking(string $now, string $evaluation): string
+    {
+        $position = 1;
+        $games = Game::all();
+
+        foreach ($games as $game) {
+            if ($game->id !== $this->id) {
+                if ($game->status === 'W') {
+                    $position++;
+                } else {
+                    $combinations =
+                        json_decode($game->combinations, true) ?? [];
+                    $gameEvaluation = $this->getEvaluation(
+                        $now,
+                        count($combinations)
+                    );
+                    if ($gameEvaluation > $evaluation) {
+                        $position++;
+                    }
+                }
+            }
+        }
+
+        return 'Position ' . $position;
     }
 }

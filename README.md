@@ -21,7 +21,7 @@
 
 ### Or you can clone it
 ```
-  ~$ git clone https://github.com/ale94lko/bulls-and-cows.git
+  $ git clone https://github.com/ale94lko/bulls-and-cows.git
 ```
 
 ## Setup
