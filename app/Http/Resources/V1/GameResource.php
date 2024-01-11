@@ -54,7 +54,7 @@ class GameResource extends JsonResource
             ];
         } else {
             $combination = $request['combination'];
-            $combinationHistory = json_decode($this->combinations, true);
+            $combinationHistory = json_decode($this->combinations, true) ?? [];
 
             switch ($this->status) {
                 case 'L':
@@ -89,6 +89,11 @@ class GameResource extends JsonResource
                             'statusCode' => 200,
                             'secretNumber' => $this->secret_number,
                             'msg' => 'Game over.',
+                        ];
+                    } elseif (in_array($combination, $combinationHistory)) {
+                        $response = [
+                            'statusCode' => 409,
+                            'errorMsg' => 'Duplicated combination.',
                         ];
                     } elseif ($combination === $this->secret_number) {
                         $combinationHistory[] = $combination;
